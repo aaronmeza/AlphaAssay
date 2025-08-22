@@ -1,0 +1,20 @@
+data:
+  path: data/samples/es_tick_add_1m.csv
+  tz: America/Chicago
+signal:
+  tick_window: 10
+  add_bias_hi: 1100
+  add_bias_lo: -300
+  z_sigma: 2.0
+risk:
+  atr_len: 14
+  stop_atr: 1.2
+  target_atr: 1.0
+  time_stop_min: 20
+costs:
+  commission_per_contract: 2.5
+  slippage_ticks: 1
+session:
+  start: "09:30"
+  end:   "15:30"
+  warmup_bars: 10
