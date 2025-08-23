@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: order-manager, labels: { app: order-manager } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: order-manager } }
+  template:
+    metadata: { labels: { app: order-manager } }
+    spec:
+      containers:
+      - name: om
+        image: ghcr.io/aaronmeza/order-manager:oss
+        env:
+          - { name: IBGW_HOST, valueFrom: { configMapKeyRef: { name: ib-config, key: host } } }
+          - { name: IBGW_PORT, valueFrom: { configMapKeyRef: { name: ib-config, key: port } } }
+          - { name: REDIS_URL, value: "redis://redis-master.trading.svc.cluster.local:6379" }
+        resources: { requests: { cpu: 300m, memory: 512Mi } }

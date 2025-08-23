@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: rl-service, labels: { app: rl-service } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: rl-service } }
+  template:
+    metadata: { labels: { app: rl-service } }
+    spec:
+      containers:
+      - name: api
+        image: ghcr.io/aaronmeza/rl-service:oss
+        env:
+          - { name: REDIS_URL, value: "redis://redis-master.trading.svc.cluster.local:6379" }
+        ports: [ { name: http, containerPort: 8000 } ]
+        resources: { requests: { cpu: 300m, memory: 512Mi } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: rl-service }
+spec:
+  selector: { app: rl-service }
+  ports: [ { name: http, port: 8000, targetPort: 8000 } ]

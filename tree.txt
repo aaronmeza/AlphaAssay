@@ -1,0 +1,52 @@
+.
+├── apps
+│   ├── backtrader-engine
+│   ├── dxfeed-adapter
+│   ├── ib-bridge
+│   ├── order-manager
+│   ├── rl-service
+│   └── streamlit-ui
+├── configs
+│   └── backtest.yaml
+├── data
+│   ├── raw
+│   └── samples
+│       └── es_tick_add_1m.csv
+├── docs
+│   ├── coding-standards.md
+│   ├── data
+│   │   └── vendor-dxfeed.md
+│   ├── go-live-checklist.md
+│   ├── guardrails.md
+│   └── metrics-and-eval.md
+├── gitops
+│   └── clusters
+│       └── home-talos
+│           ├── apps
+│           ├── infra
+│           └── kustomization.yaml
+├── infra
+│   └── talos
+│       ├── cluster
+│       │   ├── clusterconfig
+│       │   ├── flux
+│       │   │   ├── gotk-sync.yaml
+│       │   │   └── kustomization.yaml
+│       │   ├── manifests
+│       │   │   ├── cni-flannel.yaml
+│       │   │   └── metrics-server.yaml
+│       │   ├── patches
+│       │   │   ├── controlplane.settings.yaml
+│       │   │   └── worker.settings.yaml
+│       │   └── talosconfig
+│       ├── Makefile
+│       ├── README.md
+│       └── tools
+│           └── talos-env.example
+├── Makefile
+├── tests
+│   └── __pycache__
+│       └── test_sample_csv.cpython-312-pytest-7.4.4.pyc
+└── tree.txt
+
+30 directories, 20 files

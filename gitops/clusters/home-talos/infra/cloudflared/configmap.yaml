@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: { name: cloudflared-config }
+data:
+  config.yaml: |
+    tunnel: YOUR-TUNNEL-UUID
+    credentials-file: /etc/cloudflared/credentials/credentials.json
+    ingress:
+      - hostname: grafana.yourdomain.com
+      service: http://kube-prometheus-stack-grafana.observability.svc.cluster.local:80
+      - hostname: alpha.yourdomain.com
+      service: http://streamlit-ui.trading.svc.cluster.local:8501
+      - service: http_status:404

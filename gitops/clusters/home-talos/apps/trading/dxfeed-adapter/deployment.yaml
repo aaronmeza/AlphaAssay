@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: dxfeed-adapter, labels: { app: dxfeed-adapter } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: dxfeed-adapter } }
+  template:
+    metadata: { labels: { app: dxfeed-adapter } }
+    spec:
+      containers:
+      - name: dxfeed
+        image: ghcr.io/aaronmeza/dxfeed-adapter:oss
+        envFrom: [ { secretRef: { name: dxfeed-secrets } } ]
+        env:
+          - { name: REDIS_URL, value: "redis://redis-master.trading.svc.cluster.local:6379" }
+        resources: { requests: { cpu: 200m, memory: 256Mi } }

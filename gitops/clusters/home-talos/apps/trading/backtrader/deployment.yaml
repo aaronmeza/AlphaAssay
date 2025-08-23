@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: backtrader, labels: { app: backtrader } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: backtrader } }
+  template:
+    metadata: { labels: { app: backtrader } }
+    spec:
+      containers:
+      - name: engine
+        image: ghcr.io/aaronmeza/backtrader-engine:oss
+        env:
+          - { name: REDIS_URL, value: "redis://redis-master.trading.svc.cluster.local:6379" }
+          - { name: PG_DSN, value: "postgresql://trader:traderpass@postgresql.trading.svc.cluster.local:5432/trading" }
+          - { name: AA_STRATEGY_PLUGIN, value: alphaassay_strategy_oss }
+        resources: { requests: { cpu: 500m, memory: 512Mi } }

@@ -1,0 +1,22 @@
+kind: Deployment
+metadata: { name: streamlit-ui, labels: { app: streamlit-ui } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: streamlit-ui } }
+  template:
+    metadata: { labels: { app: streamlit-ui } }
+    spec:
+      containers:
+      - name: ui
+        image: ghcr.io/aaronmeza/streamlit-ui:oss
+        env:
+          - { name: REDIS_URL, value: "redis://redis-master.trading.svc.cluster.local:6379" }
+          - { name: PG_DSN, value: "postgresql://trader:traderpass@postgresql.trading.svc.cluster.local:5432/trading" }
+        ports: [ { name: http, containerPort: 8501 } ]
+---
+apiVersion: v1
+kind: Service
+metadata: { name: streamlit-ui }
+spec:
+  selector: { app: streamlit-ui }
+  ports: [ { name: http, port: 8501, targetPort: 8501 } ]

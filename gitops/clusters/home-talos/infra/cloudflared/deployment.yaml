@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: cloudflared, labels: { app: cloudflared } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: cloudflared } }
+  template:
+    metadata: { labels: { app: cloudflared } }
+    spec:
+      containers:
+      - name: cloudflared
+        image: cloudflare/cloudflared:latest
+        args: ["tunnel", "--config", "/etc/cloudflared/config/config.yaml", "run"]
+        volumeMounts:
+          - { name: creds, mountPath: /etc/cloudflared/credentials, readOnly: true }
+          - { name: cfg, mountPath: /etc/cloudflared/config, readOnly: true }
+      volumes:
+        - name: creds
+          secret: { secretName: cloudflared-credentials }
+        - name: cfg
+          configMap: { name: cloudflared-config }
