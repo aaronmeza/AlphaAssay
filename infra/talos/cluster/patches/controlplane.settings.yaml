@@ -1,0 +1,10 @@
+cluster:
+  network:
+    cni:
+      name: flannel
+machine:
+  time:
+    servers: ["time.cloudflare.com","time.google.com"]
+  kubelet:
+    extraArgs:
+      rotate-server-certificates: "true"

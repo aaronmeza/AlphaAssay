@@ -1,32 +1,39 @@
-CLUSTER := trading-talos
-CP_IP   := 172.16.0.30
-W1_IP   := 172.16.0.31
-W2_IP   := 172.16.0.32
-ENDPOINT := https://$(CP_IP):6443
+CLUSTER   := trading-talos
+CP_IP     := 172.16.0.30
+W1_IP     := 172.16.0.31
+ENDPOINT  := https://$(CP_IP):6443
+TALOSCONF := $(PWD)/cluster/clusterconfig/talosconfig
+APPLY_TIMEOUT := 60s
 
 gen:
 	@echo ">> Generating Talos cluster configs for $(CLUSTER) at $(ENDPOINT)"
-	talosctl gen config $(CLUSTER) $(ENDPOINT) --output cluster/clusterconfig --with-secrets
+	talosctl gen config $(CLUSTER) $(ENDPOINT) --output cluster/clusterconfig
+
+regen:
+	@echo ">> Re-generating configs with pinned secrets (if present)"
+	@[ -f cluster/clusterconfig/secrets.yaml ] || talosctl gen secrets --output cluster/clusterconfig/secrets.yaml
+	talosctl gen config $(CLUSTER) $(ENDPOINT) \
+	  --output cluster/clusterconfig \
+	  --with-secrets cluster/clusterconfig/secrets.yaml
 
 patch:
-	@echo ">> Applying settings overlays (CNI, NTP, kubelet args)"
+	@echo ">> Applying settings overlays (Flannel CNI, NTP, kubelet args)"
 	yq -i ea '. as $$i ireduce ({}; . *+ $$i)' \
-	cluster/clusterconfig/controlplane.yaml cluster/patches/controlplane.settings.yaml
+	  cluster/clusterconfig/controlplane.yaml cluster/patches/controlplane.settings.yaml
 	yq -i ea '. as $$i ireduce ({}; . *+ $$i)' \
-	cluster/clusterconfig/worker.yaml cluster/patches/worker.settings.yaml
+	  cluster/clusterconfig/worker.yaml cluster/patches/worker.settings.yaml
 
 apply:
-	@echo ">> Applying machine configs (DHCP-reserved IPs on eero)"
-	talosctl --nodes $(CP_IP) --endpoints $(CP_IP) apply-config --insecure --file cluster/clusterconfig/controlplane.yaml
-	talosctl --nodes $(W1_IP) --endpoints $(CP_IP) apply-config --insecure --file cluster/clusterconfig/worker.yaml
-	talosctl --nodes $(W2_IP) --endpoints $(CP_IP) apply-config --insecure --file cluster/clusterconfig/worker.yaml
+	@echo ">> Applying machine configs (DHCP reservations on eero)"
+	talosctl --talosconfig $(TALOSCONF) --nodes $(CP_IP) --endpoints $(CP_IP) --timeout $(APPLY_TIMEOUT) \
+	  apply-config --insecure --file cluster/clusterconfig/controlplane.yaml
+	talosctl --talosconfig $(TALOSCONF) --nodes $(W1_IP) --endpoints $(CP_IP) --timeout $(APPLY_TIMEOUT) \
+	  apply-config --insecure --file cluster/clusterconfig/worker.yaml
 
 bootstrap:
 	@echo ">> Bootstrapping control plane, fetching kubeconfig"
-	talosctl --nodes $(CP_IP) --endpoints $(CP_IP) bootstrap
+	talosctl --talosconfig $(TALOSCONF) --nodes $(CP_IP) --endpoints $(CP_IP) bootstrap
 	mkdir -p cluster/talosconfig
-	talosctl --nodes $(CP_IP) --endpoints $(CP_IP) kubeconfig --force --merge --path cluster/talosconfig/kubeconfig
+	talosctl --talosconfig $(TALOSCONF) --nodes $(CP_IP) --endpoints $(CP_IP) \
+	  kubeconfig cluster/talosconfig/kubeconfig --force --merge
 	KUBECONFIG=cluster/talosconfig/kubeconfig kubectl get nodes -o wide
-
-metrics:
-	KUBECONFIG=cluster/talosconfig/kubeconfig kubectl apply -f cluster/manifests/metrics-server.yaml

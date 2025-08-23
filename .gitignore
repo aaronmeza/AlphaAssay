@@ -1,2 +1,12 @@
 tmp/
-
+apps/backtrader-engine/alphaassay_strategy_pro/
+apps/rl-service/models/
+notebooks/strategy/
+tests/fixtures/strategy/
+docs/*private*/
+*.ipynb
+*.pkl *.pt *.onnx *.joblib *.npz
+infra/talos/cluster/clusterconfig/
+infra/talos/cluster/talosconfig/
+*.key
+*.crt
