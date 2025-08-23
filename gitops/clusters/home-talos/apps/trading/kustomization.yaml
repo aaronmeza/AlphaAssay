@@ -1,6 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: trading
+
 resources:
   - dxfeed-adapter/
   - ib-bridge/
@@ -8,10 +9,13 @@ resources:
   - order-manager/
   - rl-service/
   - streamlit-ui/
+
+# Apply to every Deployment rendered by this kustomization
 patches:
   - target:
+      group: apps
+      version: v1
       kind: Deployment
-      namespace: trading
     patch: |-
       - op: add
         path: /spec/template/spec/tolerations
