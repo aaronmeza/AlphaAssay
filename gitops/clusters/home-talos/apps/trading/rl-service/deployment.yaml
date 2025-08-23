@@ -14,10 +14,4 @@ spec:
           - { name: REDIS_URL, value: "redis://redis-master.trading.svc.cluster.local:6379" }
         ports: [ { name: http, containerPort: 8000 } ]
         resources: { requests: { cpu: 300m, memory: 512Mi } }
----
-apiVersion: v1
-kind: Service
-metadata: { name: rl-service }
-spec:
-  selector: { app: rl-service }
-  ports: [ { name: http, port: 8000, targetPort: 8000 } ]
+

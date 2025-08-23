@@ -13,10 +13,3 @@ spec:
           - { name: REDIS_URL, value: "redis://redis-master.trading.svc.cluster.local:6379" }
           - { name: PG_DSN, value: "postgresql://trader:traderpass@postgresql.trading.svc.cluster.local:5432/trading" }
         ports: [ { name: http, containerPort: 8501 } ]
----
-apiVersion: v1
-kind: Service
-metadata: { name: streamlit-ui }
-spec:
-  selector: { app: streamlit-ui }
-  ports: [ { name: http, port: 8501, targetPort: 8501 } ]
