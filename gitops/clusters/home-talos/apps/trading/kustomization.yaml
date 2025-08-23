@@ -8,3 +8,17 @@ resources:
   - order-manager/
   - rl-service/
   - streamlit-ui/
+patches:
+  - target:
+      kind: Deployment
+      namespace: trading
+    patch: |-
+      - op: add
+        path: /spec/template/spec/tolerations
+        value:
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Exists"
+            effect: "NoSchedule"
+          - key: "node-role.kubernetes.io/master"
+            operator: "Exists"
+            effect: "NoSchedule"
