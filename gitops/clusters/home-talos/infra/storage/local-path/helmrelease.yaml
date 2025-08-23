@@ -8,11 +8,10 @@ spec:
   chart:
     spec:
       chart: local-path-provisioner
-      # pick a known-good version; 0.0.32+ is fine on Pi
-      version: ">=0.0.32"
+      version: ">=0.0.33"
       sourceRef:
         kind: HelmRepository
-        name: rancher          # <— must match the name above
+        name: containeroo
         namespace: flux-system
   values:
     storageClass:

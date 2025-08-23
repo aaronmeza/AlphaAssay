@@ -21,3 +21,12 @@ metadata:
 spec:
   url: https://charts.rancher.io
   interval: 1h
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: containeroo
+  namespace: flux-system
+spec:
+  url: https://charts.containeroo.ch
+  interval: 1h
