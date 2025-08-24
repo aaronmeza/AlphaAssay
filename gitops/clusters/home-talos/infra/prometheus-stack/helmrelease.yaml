@@ -32,9 +32,11 @@ spec:
         retention: 2d
         retentionSize: 2Gi
         securityContext:
-          fsGroup: 2000
+          runAsNonRoot: true
+          fsGroup: 65534
           runAsUser: 65534
           runAsGroup: 65534
+          fsGroupChangePolicy: "OnRootMismatch"
         storageSpec:
           volumeClaimTemplate:
             spec:
