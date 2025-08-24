@@ -18,6 +18,10 @@ spec:
           isDefault: false
       adminPassword: prom-operator
       persistence: { enabled: true, size: 5Gi, storageClassName: local-path }
+      securityContext: { runAsUser: 472, runAsGroup: 472, fsGroup: 472 }
+      resources:
+        requests: { cpu: 100m, memory: 256Mi }
+        limits:   { memory: 384Mi }
       sidecar:
         datasources:
           enabled: true
@@ -25,9 +29,14 @@ spec:
           searchNamespace: "observability" 
     prometheus:
       prometheusSpec:
-        retention: 15d
+        retention: 2d
+        retentionSize: 2Gi
+        securityContext:
+          fsGroup: 2000
+          runAsUser: 65534
+          runAsGroup: 65534
         storageSpec:
           volumeClaimTemplate:
             spec:
               storageClassName: local-path
-              resources: { requests: { storage: 10Gi } }
+              resources: { requests: { cpu: 200m, memory: 400Mi, storage: 10Gi }, limits: { memory: 600Mi }}
