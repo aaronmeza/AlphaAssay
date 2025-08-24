@@ -65,14 +65,14 @@ spec:
           runAsUser: 65534
           runAsGroup: 65534
           allowPrivilegeEscalation: false
-        storageSpec: {}
-          # volumeClaimTemplate:
-          #   spec:
-          #     storageClassName: local-path
-          #     accessModes: ["ReadWriteOnce"]
-          #     resources:
-          #       requests:
-          #         storage: 10Gi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: local-path
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
         resources:
           requests:
             cpu: 200m
