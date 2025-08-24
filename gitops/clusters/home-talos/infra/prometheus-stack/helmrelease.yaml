@@ -46,7 +46,8 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
-                drop: ["ALL"]
+                add: ["CHOWN"]
+                drop: ["NET_RAW"]
             volumeMounts:
               # IMPORTANT: this name must match the Prometheus data volume
               - name: prometheus-kube-prometheus-stack-prometheus-db
