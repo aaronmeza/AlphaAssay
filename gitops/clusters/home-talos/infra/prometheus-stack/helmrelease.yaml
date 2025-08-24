@@ -54,11 +54,11 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-          storageClassName: local-path
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 10Gi
+              storageClassName: local-path
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 10Gi
         resources:
           requests:
             cpu: 200m
