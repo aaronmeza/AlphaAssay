@@ -10,8 +10,19 @@ spec:
       sourceRef: { kind: HelmRepository, name: prometheus-community, namespace: flux-system }
   values:
     grafana:
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          access: proxy
+          url: http://loki-stack.observability.svc.cluster.local:3100           
+          isDefault: false
       adminPassword: prom-operator
       persistence: { enabled: true, size: 5Gi, storageClassName: local-path }
+      sidecar:
+        datasources:
+          enabled: true
+          defaultDatasourceEnabled: true
+          searchNamespace: "observability" 
     prometheus:
       prometheusSpec:
         retention: 15d
