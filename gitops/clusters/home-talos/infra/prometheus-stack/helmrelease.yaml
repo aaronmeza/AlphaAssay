@@ -39,16 +39,29 @@ spec:
             volumeMounts:
               - name: prometheus-kube-prometheus-stack-prometheus-db
                 mountPath: /prometheus
+        podSecurityContext:
+          fsGroup: 65534
+          fsGroupChangePolicy: OnRootMismatch
+          runAsUser: 65534        # harmless here; primary impact is fsGroup
+          runAsGroup: 65534
         retention: 2d
         retentionSize: 2Gi
         securityContext:
           runAsNonRoot: true
-          fsGroup: 65534
           runAsUser: 65534
           runAsGroup: 65534
           fsGroupChangePolicy: "OnRootMismatch"
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: local-path
-              resources: { requests: { cpu: 200m, memory: 400Mi, storage: 10Gi }, limits: { memory: 600Mi }}
+          storageClassName: local-path
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+        resources:
+          requests:
+            cpu: 200m
+            memory: 400Mi
+          limits:
+            memory: 600Mi
